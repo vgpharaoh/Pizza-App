@@ -1,1 +1,1 @@
-web: gunicorn Pizza-App.wsgi
+web: python manage.py runserver
