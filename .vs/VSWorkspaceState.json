@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\PizzaApp",
+    "\\PizzaApp\\pizza",
+    "\\PizzaApp\\PizzaApp",
+    "\\PizzaApp\\pizza\\static",
+    "\\PizzaApp\\pizza\\templates",
+    "\\PizzaApp\\pizza\\templates\\pizza"
+  ],
+  "SelectedNode": "\\PizzaApp\\pizza\\urls.py",
+  "PreviewInSolutionExplorer": false
+}

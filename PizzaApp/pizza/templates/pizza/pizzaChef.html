@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>chefs view Title</title>
+    <link rel="stylesheet" href="{% static "styles.css" %}" />
+    <script>
+        function toggle_n(names) {
+            names.forEach((name) => {
+                toggle_form(name);
+            });
+        }
+        function toggle_form(name) {
+            let form = document.getElementById(name);
+            if(form.classList.contains('closed')) {
+                form.classList.remove('closed');
+            }
+            else {
+                form.classList.add('closed');
+            }
+        }
+        function toggle_topping(tid) {
+            let list = document.getElementById("selected-list");
+            let l = list.innerText;
+            let toppings = l.split(",");
+            if (toppings.length === 1 && toppings[0] === '') toppings = [];
+            let found = false;
+            toppings.forEach((topping) => {
+                if (topping == tid) {
+                    found = true;
+                }
+            });
+            if (found) {
+                let btn = document.getElementById("toppingadd_" + tid);
+                btn.classList.add("addbutton");
+                btn.classList.remove("rembutton");
+                let index = toppings.indexOf(tid);
+                if (index > -1) {
+                    toppings.splice(index, 1);
+                }
+            }
+            else {
+                let btn = document.getElementById("toppingadd_" + tid);
+                btn.classList.remove("addbutton");
+                btn.classList.add("rembutton");
+                toppings.push(tid);
+            }
+            let newList = toppings.join(",");
+            list.innerText = newList;
+        }
+        function toggle_topping_edit(tid, pid) {
+            let list = document.getElementById("edit-list_" + pid);
+            let l = list.innerText.replace('\n','').trim();
+            let toppings = l.split(",");
+            if (toppings.length === 1 && toppings[0] === '') toppings = [];
+            let found = false;
+            toppings.forEach((topping) => {
+                if (topping == tid) {
+                    found = true;
+                }
+            });
+            if (found) {
+                let btn = document.getElementById("toppingedit_" + tid + "_" + pid);
+                btn.classList.add("addbutton");
+                btn.classList.remove("rembutton");
+                let index = toppings.indexOf(tid);
+                if (index > -1) {
+                    toppings.splice(index, 1);
+                }
+            }
+            else {
+                let btn = document.getElementById("toppingedit_" + tid + "_" + pid);
+                btn.classList.remove("addbutton");
+                btn.classList.add("rembutton");
+                toppings.push(tid);
+            }
+            let newList = toppings.join(",");
+            list.innerText = newList;
+        }
+        function add_pizza() {
+            let pname = document.getElementById("pName").value;
+            let tname = document.getElementById("selected-list").innerText;
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            xhttp.open("GET", "../addpizza/" + pname + "/" + tname, true);
+            xhttp.send();
+        }
+        function rem_pizza(name) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            xhttp.open("GET", "../rempizza/" + name, true);
+            xhttp.send();
+        }
+        function upd_pizza(select) {
+            let name = document.getElementById(select + "_input").value;
+            let top = document.getElementById("edit-list_" + select).innerText.replace('\n', '').trim();
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            if (name === "") name = "invalid";
+            if (top === "") top = "invalid";
+            xhttp.open("GET", "../updpizza/" + select + "/" + name + "/" + top, true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body>
+    <button class="addbutton outerbutton" onclick="toggle_form('addForm')">
+        Add Pizza
+    </button>
+    <div class="addPizza closed" id="addForm">
+        <div class="addInput">
+            <div class="addPizzaName">
+                <label for="pName"> Pizza:</label>
+                <br />
+                <input type="text" id="pName" name="pName" />
+            </div>
+            {% if topping %}
+            <div class="addToppingNames">
+                {% for toppings in topping %}
+                <button class="add_topping addbutton" id="toppingadd_{{ toppings.topping_ID }}" onclick="toggle_topping('{{ toppings.topping_ID }}')">
+                    {{ toppings.topping_name }}
+                </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <button class="addbutton" onclick="add_pizza()">Confirm</button>
+    </div>
+
+    <div style="display:none;" id="selected-list"></div>
+
+    {% if pizza %}
+    <table>
+        <tr>
+            <th>Pizza ID</th>
+            <th>Pizza Name</th>
+            <th>Pizza Toppings</th>
+            <th></th>
+        </tr>
+        {% for pizzas in pizza %}
+        <tr>
+            <td>
+                {{ pizzas.pizza_ID }}
+            </td>
+            <td>
+                <a onclick="toggle_n(['{{pizzas.pizza_ID}}_form', '{{pizzas.pizza_ID}}_link', '{{pizzas.pizza_ID}}_toppingform', '{{pizzas.pizza_ID}}_toppinglink'])" href="javascript:void(0)" id="{{pizzas.pizza_ID}}_link">
+                    {{ pizzas.pizza_name }}
+                </a>
+                <div id="{{pizzas.pizza_ID}}_form" class="closed">
+                    <div>
+                        <label for="{{pizzas.pizza_ID}}_input"> New name for {{pizzas.pizza_name}}</label>
+                        <br />
+                        <input type="text" placeholder="{{pizzas.pizza_name}}" id="{{pizzas.pizza_ID}}_input" name="{{pizzas.pizza_ID}}_input" />
+                    </div>
+                    <button class="addbutton" onclick="upd_pizza({{pizzas.pizza_ID}})">Update</button>
+                </div>
+            </td>
+            <td class="toppings_cont">
+                <div class="toppings_list" id="{{pizzas.pizza_ID}}_toppinglink">
+                    {{ pizzas.pizza_topping }}
+                </div>
+                <div id="{{pizzas.pizza_ID}}_toppingform" class="topping_form closed">
+                    <div style="display:none;" id="edit-list_{{pizzas.pizza_ID}}">
+                        {{ pizzas.pizza_topping }}
+                    </div>
+                    {% if topping %}
+                    <div id="btn_edit_{{pizzas.pizza_ID}}">
+                        {% for toppings in topping %}
+                            <button class="edit_topping addbutton" id="toppingedit_{{ toppings.topping_ID }}_{{ pizzas.pizza_ID }}" onclick="toggle_topping_edit('{{ toppings.topping_ID }}','{{ pizzas.pizza_ID }}')">
+                                {{ toppings.topping_name }}
+                            </button>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <button class="addbutton" onclick="upd_pizza({{pizzas.pizza_ID}})">Update</button>
+                </div>
+            </td>
+            <td>
+                <button class="rembutton" onclick="rem_pizza({{ pizzas.pizza_ID }})">
+                    Remove Pizza
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No pizzas are available.</p>
+    {% endif %}
+    <script>
+        (function () {
+            let edit_t = document.getElementsByClassName("edit_topping");
+            Array.prototype.forEach.call(edit_t, function (editlist) {
+                let ids = editlist.id.split('_');
+                let ts_el = document.getElementById(ids[2] + "_toppinglink");
+                let ts = ts_el.innerText;
+
+                if (ts.includes(ids[1])) {
+                    editlist.classList.remove("addbutton");
+                    editlist.classList.add("rembutton");
+                }
+            });
+
+            let toppings = document.getElementsByClassName("toppings_list");
+            Array.prototype.forEach.call(toppings, function (tlist) {
+                let output = "";
+                let val = tlist.innerText.split(',');
+                let i = 0;
+                val.forEach((t) => {
+                    if (i !== 0) output += "<br />";
+                    let t_def = document.getElementById("toppingadd_" + t);
+                    let topping = "";
+                    if (t_def !== null && t_def !== undefined && typeof t_def !== 'undefined') {
+                        topping = t_def.innerHTML;
+                    }
+                    output += topping;
+                    i++;
+                });
+                tlist.innerHTML = output;
+            });
+        })();
+    </script>
+</body>
+</html>

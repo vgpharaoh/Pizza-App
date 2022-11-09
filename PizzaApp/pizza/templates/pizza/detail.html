@@ -1,0 +1,32 @@
+<h1>{{ pizza.pizza_text }}</h1>
+<ul>
+    <head>
+        <title>owners view Title</title>
+        <style>
+            body {
+                background-color: powderblue;
+            }
+
+            h1 {
+                color: red;
+            }
+
+            p {
+                color: blue;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <th>Pizza ID</th>
+                <th>Pizza Name</th>
+            </tr>
+            {% for p in pizza.pizza_name.all %}
+<li>{{ p.pizza_name }}</li>
+    {% endfor %}
+    {% else %}
+    <p>No pizzas are available.</p>
+    {% endif %}
+    </body>
+</ul>

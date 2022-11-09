@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>owners view Title</title>
+    <link rel="stylesheet" href="{% static "styles.css" %}" />
+    <script>
+        function toggle2(name1, name2) {
+            toggle_form(name1);
+            toggle_form(name2);
+        }
+        function toggle_form(name) {
+            let form = document.getElementById(name);
+            if(form.classList.contains('closed')) {
+                form.classList.remove('closed');
+            }
+            else {
+                form.classList.add('closed');
+            }
+        }
+        function add_topping() {
+            let name = document.getElementById("tName").value;
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            xhttp.open("GET","../addtopping/" + name, true);
+            xhttp.send();
+        }
+        function rem_topping(name) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            xhttp.open("GET", "../remtopping/" + name, true);
+            xhttp.send();
+        }
+        function upd_topping(select) {
+            let name = document.getElementById(select + "_input").value;
+            const xhttp = new XMLHttpRequest();
+            xhttp.onload = function () {
+                location.reload();
+            }
+            xhttp.open("GET", "../updtopping/" + select + "/" + name, true);
+            xhttp.send();
+        }
+    </script>
+</head>
+<body>
+    <button class="addbutton outerbutton" onclick="toggle_form('addForm')">
+        Add Topping
+    </button>
+    <div class="addTopping closed" id="addForm">
+        <div class="addInput">
+            <label for="tName"> Topping:</label>
+            <br />
+            <input type="text" id="tName" name="tName" />
+        </div>
+        <button class="addbutton" onclick="add_topping()">Confirm</button>
+    </div>
+
+    {% if topping %}
+    <table>
+        <tr>
+            <th>Topping ID</th>
+            <th>Topping Name</th>
+            <th></th>
+        </tr>
+        {% for toppings in topping %}
+        <tr>
+            <td>
+                {{ toppings.topping_ID }}
+            </td>
+            <td>
+                <a onclick="toggle2('{{toppings.topping_ID}}_form', '{{toppings.topping_ID}}_link')" href="javascript:void(0)" id="{{toppings.topping_ID}}_link">
+                    {{ toppings.topping_name }}
+                </a>
+                <div id="{{toppings.topping_ID}}_form" class="closed">
+                    <div>
+                        <label for="{{toppings.topping_ID}}_input"> New name for {{toppings.topping_name}}</label>
+                        <br />
+                        <input type="text" placeholder="{{toppings.topping_name}}" id="{{toppings.topping_ID}}_input" name="{{toppings.topping_ID}}_input" />
+                    </div>
+                    <button class="addbutton" onclick="upd_topping({{toppings.topping_ID}})">Update</button>
+                </div>
+            </td>
+            <td>
+                <button class="rembutton" onclick="rem_topping({{ toppings.topping_ID }})">
+                    Remove Topping
+                </button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No toppings are available.</p>
+    {% endif %}
+</body>
+</html>

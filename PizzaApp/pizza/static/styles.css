@@ -1,0 +1,61 @@
+body {
+    background-color: powderblue;
+}
+
+h1 {
+    color: red;
+}
+
+p {
+    color: blue;
+}
+button {
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+button:active {
+    transform: translateY(2px);
+}
+.addbutton {
+    padding: 5px 25px;
+    background-color: rgb(10,255,150);
+}
+.outerbutton{
+    margin-bottom: 10px;
+}
+.addbutton:active{
+    background-color: rgb(10, 200, 50);
+}
+.rembutton {
+    padding: 5px 15px;
+    background-color: rgb(255,10,150);
+}
+.rembutton:active{
+    background-color: rgb(200,10,50);
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+th, td {
+    padding: 5px 25px;
+}
+.addTopping, .addPizza {
+    margin-bottom: 10px;
+    margin-left: 20px;
+    display: flex;
+    align-content: center;
+    align-items: center;
+}
+.addInput {
+    float: left;
+    text-align: center;
+    margin-right: 15px;
+}
+.closed {
+    display: none !important;
+}
