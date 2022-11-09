@@ -1,9 +1,11 @@
 from django.urls import path
-
 from . import views
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico'))),
     path('owner/', views.owner, name='owner'),
     path('chef/', views.chef, name='chef'),
     path('addtopping/<str:name>/', views.addtopping, name='addtopping'),
