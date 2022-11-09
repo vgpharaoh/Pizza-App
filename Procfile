@@ -1,1 +1,1 @@
-web: sh -c 'cd ./Pizza-App/ && exec gunicorn Pizza-App.wsgi --log-file -'
+web: sh -c 'cd ./PizzaApp/ && exec gunicorn PizzaApp.wsgi --log-file -'
